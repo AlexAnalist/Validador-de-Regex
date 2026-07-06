@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validador de Expresiones Regulares (Regex)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            border: 2px dashed #dcdde1;
+            color: #7f8c8d;
+        }
+
+        .result-box.valido {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .result-box.invalido {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .result-box.error {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeeba;
+            font-size: 14px;
+        }
+
+        .info {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Validador de Regex</h2>
+
+        <div class="form-group">
+            <label for="regexInput">1. Expresión Regular (Regex):</label>
+            <input type="text" id="regexInput" placeholder="Ej: (ab|ba)+c?" value="(ab|ba)+c?">
+            <div class="info">Por defecto evalúa si coincide con la cadena completa.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="cadenaInput">2. Cadena a evaluar:</label>
+            <input type="text" id="cadenaInput" placeholder="Escribe la cadena aquí..." value="abab">
+        </div>
+
+        <div id="resultado" class="result-box">
+            Esperando entrada...
+        </div>
+    </div>
+
+    <script>
+        const regexInput = document.getElementById('regexInput');
+        const cadenaInput = document.getElementById('cadenaInput');
+        const resultadoDiv = document.getElementById('resultado');
+
+        function evaluarRegex() {
+            const regexStr = regexInput.value;
+            const cadenaStr = cadenaInput.value;
+
+            if (regexStr.trim() === "" || cadenaStr === "") {
+                resultadoDiv.textContent = "Esperando entrada...";
+                resultadoDiv.className = "result-box";
+                return;
+            }
+
+            try {
+                // Forzamos evaluación estricta de inicio a fin si no se especificó explicitamente
+                let patron = regexStr;
+                if (!patron.startsWith('^')) patron = '^' + patron;
+                if (!patron.endsWith('$')) patron = patron + '$';
+
+                const regex = new RegExp(patron);
+
+                if (regex.test(cadenaStr)) {
+                    resultadoDiv.textContent = "✓ APROBADO";
+                    resultadoDiv.className = "result-box valido";
+                } else {
+                    resultadoDiv.textContent = "✗ RECHAZADO";
+                    resultadoDiv.className = "result-box invalido";
+                }
+            } catch (e) {
+                resultadoDiv.textContent = "⚠ Expresión regular inválida o mal escrita";
+                resultadoDiv.className = "result-box error";
+            }
+        }
+
+        // Eventos para actualizar dinámicamente al escribir
+        regexInput.addEventListener('input', evaluarRegex);
+        cadenaInput.addEventListener('input', evaluarRegex);
+
+        // Ejecución por defecto al cargar la página
+        evaluarRegex();
+    </script>
+
+</body>
+
+</html>
